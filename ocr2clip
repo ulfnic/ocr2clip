@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+:<<-'Comment'
+	Dependencies:
+		- tesseract
+
+	Wayland dependencies:
+		- grim
+		- slurp
+		- wl-copy
+
+	X11 dependencies:
+		- maim
+		- xclip or xsel
+
+	Optional dependencies:
+		- ffmpeg or ImageMagick (for improved accuracy)
+Comment
+
+
+
+set -o errexit
+
+print_stderr() {
+	[[ $2 ]] && printf "$2" "${@:3}" 1>&2
+	[[ $1 == '0' ]] || exit $1
+}
+
+
+
+# Define display server
+if [[ $DISPLAY ]]; then
+	[[ $WAYLAND_DISPLAY ]] && display_server='xwayland' || display_server='x11'
+else
+	display_server='wayland'
+fi
+
+
+
+# Check dependencies
+type tesseract &> /dev/null || print_stderr 1 '%s\n' 'Missing dependency: tesseract'
+
+if [[ $display_server == 'wayland' ]] || [[ $display_server == 'xwayland' ]]; then
+	type wl-copy &> /dev/null || print_stderr 1 '%s\n' 'Missing dependency: wl-copy'
+	type slurp &> /dev/null || print_stderr 1 '%s\n' 'Missing dependency: slurp'
+	type grim &> /dev/null || print_stderr 1 '%s\n' 'Missing dependency: grim'
+	clipboard_cmd='wl-copy'
+
+elif [[ $display_server == 'x11' ]]; then
+	type maim &> /dev/null || print_stderr 1 '%s\n' 'Missing dependency: maim'
+	if type xsel &> /dev/null; then
+		clipboard_cmd='xsel --input --clipboard'
+	elif type xclip &> /dev/null; then
+		clipboard_cmd='xclip -in -selection clipboard'
+	else
+		print_stderr 1 '%s\n' 'Missing dependency: xsel or xclip'
+	fi
+fi
+
+
+
+# Stdout user's screen selection
+function screen_select(){
+	if [[ $display_server == 'wayland' ]] || [[ $display_server == 'xwayland' ]]; then
+		# Get selection and honor escape key
+		grim -t png -l 9 -g "$(slurp)" -
+
+	elif [[ $display_server == 'x11' ]]; then
+		maim --select --hidecursor --format=png --quality=10 /dev/fd/1
+
+	fi
+}
+
+
+
+# OCR screen selection and deliver to clipboard
+function ocr_selection(){
+	str=$( tesseract stdin stdout 2>/dev/null )
+
+	# Remove leading and trailing whitespace
+	str=${str#"${str%%[![:space:]]*}"}
+	str=${str%"${str##*[![:space:]]}"}
+
+	# Place in clipboard
+	printf '%s' "$str" | $clipboard_cmd
+}
+
+
+
+# Empty clipboard to avoid false positives
+printf '' | $clipboard_cmd
+
+
+
+# If a suitable program is available, upscale the image by 4x using either ffmpeg or ImageMagik to improve accuracy
+if type ffmpeg &> /dev/null; then
+	ffmpeg \
+		-hide_banner \
+		-loglevel error \
+		-i <( screen_select ) \
+		-vf scale=iw*4:ih*4 \
+		-f image2 \
+		>( ocr_selection ) \
+		-y \
+
+elif type mogrify &> /dev/null; then
+	screen_select \
+		| mogrify \
+			png:- \
+			-modulate 100,0 \
+			-resize 400% \
+		| ocr_selection
+
+else
+	screen_select | ocr_selection
+
+fi
+
+
+
