@@ -8,7 +8,7 @@ X11 or Wayland based distributions
 - `tesseract`
 
 #### X11:
-- `maim`
+- `maim` or `import`
 - `xclip` or `xsel`
 
 #### Wayland:
