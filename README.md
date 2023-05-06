@@ -39,8 +39,17 @@ ocr2clip
 
 ## Troubleshooting
 
-- Open up a terminal and run `ocr2clip`
-- Make sure `/usr/local/bin` is in your $PATH
+#### Accuracy is poor:
+
+- Make sure you have `ffmpeg` or `mogrify` installed
+```bash
+which ffmpeg
+which mogrify
+```
+
+#### "command not found":
+
+- Make sure `/usr/local/bin` is in your $PATH or run it explicitly using `/usr/local/bin/ocr2clip`
 
 ## License
 Licensed under GNU Affero General Public License v3. See LICENSE for details.
