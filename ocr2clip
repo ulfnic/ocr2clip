@@ -109,7 +109,7 @@ printf '' | $clipboard_cmd
 
 
 
-# If a suitable program is available, upscale the image by 4x using either ffmpeg or ImageMagik to improve accuracy
+# If a suitable program is available, upscale the image by 4x to improve accuracy
 if type ffmpeg &> /dev/null; then
 	ffmpeg \
 		-hide_banner \
