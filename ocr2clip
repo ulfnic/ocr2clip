@@ -99,7 +99,7 @@ function ocr_selection(){
 	str=${str%"${str##*[![:space:]]}"}
 
 	# Place in clipboard
-	printf '%s' "$str" | $clipboard_cmd
+	printf '%s' "$str"
 }
 
 
@@ -119,6 +119,7 @@ if type ffmpeg &> /dev/null; then
 		-f image2 \
 		>( ocr_selection ) \
 		-y \
+		| $clipboard_cmd
 
 elif type mogrify &> /dev/null; then
 	screen_select \
@@ -126,10 +127,11 @@ elif type mogrify &> /dev/null; then
 			png:- \
 			-modulate 100,0 \
 			-resize 400% \
-		| ocr_selection
+		| ocr_selection \
+		| $clipboard_cmd
 
 else
-	screen_select | ocr_selection
+	screen_select | ocr_selection | $clipboard_cmd
 
 fi
 
