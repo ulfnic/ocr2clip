@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 :<<-'Comment'
+	ocr2clip
+
+	Read text within a screen-grab and put it in your clipboard.
+
 	Dependencies:
 		- tesseract
 
@@ -13,8 +17,11 @@
 		- maim or import
 		- xclip or xsel
 
-	Optional dependencies:
-		- ffmpeg or ImageMagick (for improved accuracy)
+	Optional dependencies for improved accuracy:
+		- ffmpeg or mogrify
+
+	Note:
+		import and mogrify should be in the imagemagick package.
 Comment
 
 
