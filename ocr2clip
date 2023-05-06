@@ -10,7 +10,7 @@
 		- wl-copy
 
 	X11 dependencies:
-		- maim
+		- maim or import
 		- xclip or xsel
 
 	Optional dependencies:
@@ -47,7 +47,14 @@ if [[ $display_server == 'wayland' ]] || [[ $display_server == 'xwayland' ]]; th
 	clipboard_cmd='wl-copy'
 
 elif [[ $display_server == 'x11' ]]; then
-	type maim &> /dev/null || print_stderr 1 '%s\n' 'Missing dependency: maim'
+	if type maim &> /dev/null; then
+		screen_select_cmd='maim --select --hidecursor --format=png --quality=10 /dev/fd/1'
+	elif type import &> /dev/null; then
+		screen_select_cmd='import -silent -quality 100 bmp:-'
+	else
+		print_stderr 1 '%s\n' 'Missing dependency: xsel or xclip'
+	fi
+
 	if type xsel &> /dev/null; then
 		clipboard_cmd='xsel --input --clipboard'
 	elif type xclip &> /dev/null; then
@@ -66,7 +73,7 @@ function screen_select(){
 		grim -t png -l 9 -g "$(slurp)" -
 
 	elif [[ $display_server == 'x11' ]]; then
-		maim --select --hidecursor --format=png --quality=10 /dev/fd/1
+		$screen_select_cmd
 
 	fi
 }
