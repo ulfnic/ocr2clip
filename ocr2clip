@@ -22,6 +22,9 @@
 
 	Note:
 		import and mogrify should be in the imagemagick package.
+
+	License:
+		GNU Affero General Public License v3 (AGPLv3)
 Comment
 
 
@@ -59,7 +62,7 @@ elif [[ $display_server == 'x11' ]]; then
 	elif type import &> /dev/null; then
 		screen_select_cmd='import -silent -quality 100 bmp:-'
 	else
-		print_stderr 1 '%s\n' 'Missing dependency: xsel or xclip'
+		print_stderr 1 '%s\n' 'Missing dependency: maim or import'
 	fi
 
 	if type xsel &> /dev/null; then
