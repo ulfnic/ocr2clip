@@ -1,20 +1,22 @@
 # ocr2clip
+
 Read text within a screen-grab and put it in your clipboard.
 
-## Example X11 Installation
-```bash
-sudo apt install tesseract-ocr maim xclip ffmpeg
-cd /usr/local/bin
-sudo wget https://raw.githubusercontent.com/ulfnic/ocr2clip/main/ocr2clip
-sudo chmod +x ./ocr2clip
-```
+`ocr2clip` uses `tesseract` to perform text recognition and tries to remain package agnostic for additional tasks (see: Dependencies).
 
-## Example Wayland Installation
+## Installation
 ```bash
-sudo apt install tesseract-ocr grim slurp ffmpeg
+# Install to /usr/local/bin
 cd /usr/local/bin
 sudo wget https://raw.githubusercontent.com/ulfnic/ocr2clip/main/ocr2clip
 sudo chmod +x ./ocr2clip
+
+# Test run
+ocr2clip
+
+# Satisfy dependencies if prompted to do so.
+
+# Consider installing ffmpeg or mogrify (part of imagemagick) for improved accuracy.
 ```
 
 ## Dependencies
@@ -33,7 +35,12 @@ sudo chmod +x ./ocr2clip
 - `ffmpeg` or `mogrify`
 
 #### Note:
-`import` and `mogrify` should be in the `imagemagick` package.
+`import` and `mogrify` are part of `imagemagick`
+
+## Troubleshooting
+
+- Open up a terminal and run `ocr2clip`
+- Make sure `/usr/local/bin` is in your $PATH
 
 ## License
 Licensed under GNU Affero General Public License v3. See LICENSE for details.
