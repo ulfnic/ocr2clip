@@ -23,7 +23,7 @@ ocr2clip
 - `tesseract`
 
 #### X11:
-- `maim` or `import`
+- `maim`, `import`, or `flameshot`
 - `xclip` or `xsel`
 
 #### Wayland:
