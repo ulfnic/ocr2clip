@@ -14,7 +14,7 @@
 		- wl-copy
 
 	X11 dependencies:
-		- maim or import
+		- maim, import or flameshot
 		- xclip or xsel
 
 	Optional dependencies for improved accuracy:
@@ -61,8 +61,10 @@ elif [[ $display_server == 'x11' ]]; then
 		screen_select_cmd='maim --select --hidecursor --format=png --quality=10 /dev/fd/1'
 	elif type import &> /dev/null; then
 		screen_select_cmd='import -silent -quality 100 bmp:-'
+	elif type flameshot &> /dev/null; then
+		screen_select_cmd='flameshot gui --raw'
 	else
-		print_stderr 1 '%s\n' 'Missing dependency: maim or import'
+		print_stderr 1 '%s\n' 'Missing dependency: maim, import or flameshot'
 	fi
 
 	if type xsel &> /dev/null; then
