@@ -50,6 +50,3 @@ which mogrify
 #### "command not found":
 
 - Make sure `/usr/local/bin` is in your $PATH or run it explicitly using `/usr/local/bin/ocr2clip`
-
-## License
-Licensed under GNU Affero General Public License v3. See LICENSE for details.
